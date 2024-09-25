@@ -1,10 +1,13 @@
 import express from 'express'
 import cors from 'cors'
+import { configDotenv } from 'dotenv'
 
 import {MercadoPagoConfig, Preference} from 'mercadopago'
 
+const dotenv = configDotenv();
+
 const client = new MercadoPagoConfig({
-    accessToken:"",
+    accessToken:process.env.ACCESS_TOKEN,
 })
 
 const app = express();

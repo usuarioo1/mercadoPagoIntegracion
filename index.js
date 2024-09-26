@@ -33,9 +33,9 @@ app.post('/create_preference',async(req,res)=> {
                 },
             ],
             back_urls:{
-                success:"",
-                failure:"",
-                pendinf:""
+                success:"https://www.youtube.com/watch?v=-VD-l5BQsuE&t=2078s",
+                failure:"https://www.google.com/search?q=fail&newwindow=1&client=firefox-b-d&sca_esv=ea88a6ae473de4d9&sca_upv=1&udm=2&sxsrf=ADLYWIIQXjgFisaA_SwuK7XW9I9Abtrvlg:1727308570497&source=lnms&sa=X&ved=2ahUKEwiw5Yvupd-IAxUxLbkGHfU7DLIQ_AUoAXoECAUQAw&biw=1920&bih=919#vhid=57TkE9hwj3pVrM&vssid=mosaic",
+                pending:""
             },
             auto_return:"approved"
         };

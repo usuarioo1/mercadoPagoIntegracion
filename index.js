@@ -57,65 +57,26 @@ app.post('/create_preference',async(req,res)=> {
 } );
 
 // Webhook endpoint para recibir notificaciones de Mercado Pago
-app.post('/webhook', async (req, res) => {
-    try {
-        const { data } = req.body;
-        
-        // Solo procesamos notificaciones de pagos
-        if (data.type === "payment") {
-            const paymentId = data.id;
-            
-            // Obtener detalles del pago usando el SDK de Mercado Pago
-            const payment = await client.payment.findById(paymentId);
-            
-            // Si el pago fue aprobado, actualizamos la orden
-            if (payment.status === 'approved') {
-                // Llamar al backend principal para actualizar el estado de la orden
-                const response = await fetch(`${process.env.API_URL}/update_order_status`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        orderId: payment.external_reference,
-                        mercadoPagoId: payment.id,
-                        paymentStatus: payment.status
-                    })
-                });
-
-                if (!response.ok) {
-                    throw new Error('Error actualizando la orden');
-                }
-            }
-        }
-
-        res.status(200).send('OK');
-    } catch (error) {
-        console.error('Error en webhook:', error);
-        res.status(500).json({ error: 'Error procesando webhook' });
-    }
-});
 
 // Webhook endpoint para recibir notificaciones de Mercado Pago
 app.post('/webhook', async (req, res) => {
     try {
+        console.log('Webhook recibido:', req.body);
         const { data } = req.body;
         
-        // Solo procesamos notificaciones de pagos
         if (data.type === "payment") {
             const paymentId = data.id;
-            
-            // Obtener detalles del pago usando el SDK de Mercado Pago
             const payment = await client.payment.findById(paymentId);
-            
-            // Si el pago fue aprobado, actualizamos la orden
+            console.log('Detalles del pago:', payment);
+
             if (payment.status === 'approved') {
-                // Llamar al backend principal para actualizar el estado de la orden usando axios
-                const response = await axios.post(`${process.env.API_URL}/update_order_status`, {
+                // Llamar al backend principal para actualizar la orden y descontar stok
+                const response = await axios.post('https://apback.onrender.com/update_order_status', {
                     orderId: payment.external_reference,
                     mercadoPagoId: payment.id,
                     paymentStatus: payment.status
                 });
+                console.log('Respuesta backend principal:', response.data);
 
                 if (response.status !== 200) {
                     throw new Error('Error actualizando la orden');
